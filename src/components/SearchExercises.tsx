@@ -1,5 +1,5 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { exerciseOptions, fetchData } from "../utils/fetchData";
 
 const SearchExercises = () => {
@@ -11,6 +11,7 @@ const SearchExercises = () => {
 				"https://exercisedb.p.rapidapi.com/exercises/bodyPartList",
 				exerciseOptions
 			);
+			console.log(exerciseOptions);
 			console.log("?", exerciseData);
 			setSearch("");
 		}
