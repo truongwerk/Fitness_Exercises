@@ -1,19 +1,49 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { exerciseOptions, fetchData } from "../utils/fetchData";
+import HorizontalScrollbar from "./HorizontalScrollbar";
 
 const SearchExercises = () => {
 	const [search, setSearch] = useState("");
+	const [bodyParts, setBodyParts] = useState<Array<string>>([]);
+	const [exercises, setExercises] = useState([]);
 
-	const handleSearch = async () => {
-		if (search) {
-			const exerciseData = await fetchData(
+	useEffect(() => {
+		const fetchExercisesData = async () => {
+			const bodyPartsData = await fetchData(
 				"https://exercisedb.p.rapidapi.com/exercises/bodyPartList",
 				exerciseOptions
 			);
-			console.log(exerciseOptions);
-			console.log("?", exerciseData);
-			setSearch("");
+			setBodyParts(["all", ...bodyPartsData]);
+		};
+
+		fetchExercisesData();
+	}, []);
+
+	const handleSearch = async () => {
+		const searchResult = search.toLocaleLowerCase().trim();
+		setSearch("");
+		if (searchResult) {
+			const exerciseData = await fetchData(
+				"https://exercisedb.p.rapidapi.com/exercises",
+				exerciseOptions
+			);
+
+			const searchExercises = exerciseData.filter(
+				(exercise: {
+					name: string;
+					target: string;
+					equipment: string;
+					bodyPart: string;
+				}) =>
+					exercise.name.toLocaleLowerCase().includes(searchResult) ||
+					exercise.target.toLocaleLowerCase().includes(searchResult) ||
+					exercise.equipment.toLocaleLowerCase().includes(searchResult) ||
+					exercise.bodyPart.toLocaleLowerCase().includes(searchResult)
+			);
+			setExercises(searchExercises);
+			console.log(exercises);
+			console.log("response", searchExercises);
 		}
 	};
 
@@ -40,7 +70,7 @@ const SearchExercises = () => {
 						input: { fontWeight: 700, border: "none", borderRadius: "4px" },
 					}}
 					value={search}
-					onChange={(e) => setSearch(e.target.value.toLowerCase())}
+					onChange={(e) => setSearch(e.target.value)}
 					placeholder="Search Exercises"
 					type="text"
 				/>
@@ -61,8 +91,17 @@ const SearchExercises = () => {
 					Search
 				</Button>
 			</Box>
+			<Box
+				sx={{
+					position: "relative",
+					width: "100%",
+					p: "20px",
+				}}
+			>
+				<HorizontalScrollbar data={bodyParts} />
+			</Box>
 		</Stack>
 	);
 };
 
-export default SearchExercises;
+export default memo(SearchExercises);
