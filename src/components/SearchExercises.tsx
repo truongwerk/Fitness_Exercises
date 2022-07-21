@@ -3,6 +3,20 @@ import { memo, useEffect, useState } from "react";
 import { exerciseOptions, fetchData } from "../utils/fetchData";
 import HorizontalScrollbar from "./HorizontalScrollbar";
 
+const bodyParts = [
+	"all",
+	"back",
+	"cardio",
+	"chest",
+	"lower arms",
+	"lower legs",
+	"neck",
+	"shoulders",
+	"upper arms",
+	"upper legs",
+	"waist",
+];
+
 const SearchExercises = ({
 	setExercises,
 	bodyPart,
@@ -13,19 +27,6 @@ const SearchExercises = ({
 	setBodyPart: any;
 }) => {
 	const [search, setSearch] = useState("");
-	const [bodyParts, setBodyParts] = useState<Array<string>>([]);
-
-	useEffect(() => {
-		const fetchExercisesData = async () => {
-			const bodyPartsData = await fetchData(
-				"https://exercisedb.p.rapidapi.com/exercises/bodyPartList",
-				exerciseOptions
-			);
-			setBodyParts(["all", ...bodyPartsData]);
-		};
-
-		fetchExercisesData();
-	}, []);
 
 	const handleSearch = async () => {
 		const searchResult = search.toLocaleLowerCase().trim();
@@ -108,6 +109,7 @@ const SearchExercises = ({
 					data={bodyParts}
 					bodyPart={bodyPart}
 					setBodyPart={setBodyPart}
+					bodyParts
 				/>
 			</Box>
 		</Stack>
