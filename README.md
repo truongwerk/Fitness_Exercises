@@ -41,12 +41,14 @@ Start the server
   yarn run dev
 ```
 
-## License
+## Screenshots:
 
 ![App Screenshot](./screenshots/2.png)
 
 ##
 
 ![App Screenshot](./screenshots/3.png)
+
+## License:
 
 [MIT](https://choosealicense.com/licenses/mit/)
